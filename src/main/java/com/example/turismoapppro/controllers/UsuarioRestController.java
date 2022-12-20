@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = { "*" })
 @RestController
 @RequestMapping("/api")
 public class UsuarioRestController {
@@ -29,10 +29,12 @@ public class UsuarioRestController {
     public void setUsuarioService(IUsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
+
     @Autowired
     public void setPublicacionService(IPublicacionService publicacionService) {
         this.publicacionService = publicacionService;
     }
+
     @Autowired
     public void setMunicipioService(IMunicipioService municipioService) {
         this.municipioService = municipioService;
