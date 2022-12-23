@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'ls'
                 sh 'sudo ./mvnw clean install'
                 sh 'sudo ./mvnw package'
             }
