@@ -41,10 +41,7 @@ jobs:
           JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
           JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
           JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
-    
-  deploy-java-app:
-    runs-on: ubuntu-latest
-    steps:
+
       - name: 'Deploy'
         uses: appleboy/ssh-action@master
         with:
