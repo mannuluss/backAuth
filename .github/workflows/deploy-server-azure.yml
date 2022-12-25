@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout GitHub Action'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh/
@@ -60,11 +60,6 @@ jobs:
           JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
 
       - name: 'Deploy'
-        uses: appleboy/ssh-action@master
-        with:
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            ls
-        run: ssh ec2
+        run: ssh ec2 'ls'
 
 
