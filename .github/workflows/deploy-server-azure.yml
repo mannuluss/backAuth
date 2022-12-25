@@ -17,7 +17,7 @@ env:
   SERVERIP: '51.142.141.42'
   USERNAME_SERVER: 'ubuntuAdmin'
   PACKAGE_DIRECTORY: '.' # set this to the directory which contains pom.xml file
-  JAVA_VERSION: '8' # set this to the java version to use
+  JAVA_VERSION: '11' # set this to the java version to use
 
 jobs:
   build-and-deploy:
@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Java Sdk ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
 
