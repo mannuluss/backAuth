@@ -37,6 +37,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.PACKAGE_DIRECTORY }}'
+          mvn install
           mvn clean package
           popd
       
