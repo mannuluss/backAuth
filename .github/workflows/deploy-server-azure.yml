@@ -11,6 +11,7 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+  workflow_dispatch:
 
 env:
   USERNAME_SERVER: 'ubuntuAdmin'
@@ -49,6 +50,7 @@ jobs:
           username: ${{ env.USERNAME_SERVER }}
           key: ${{ secrets.KEY_SSL }}
           port: ${{ secrets.SSH_PORT }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             ls
 
