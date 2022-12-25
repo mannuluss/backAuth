@@ -14,7 +14,6 @@ on:
   workflow_dispatch:
 
 env:
-  SERVERIP: '51.142.141.42'
   USERNAME_SERVER: 'ubuntuAdmin'
   PACKAGE_DIRECTORY: '.' # set this to the directory which contains pom.xml file
   JAVA_VERSION: '11' # set this to the java version to use
@@ -47,7 +46,7 @@ jobs:
       - name: 'Deploy'
         uses: appleboy/ssh-action@master
         with:
-          host: env.SERVERIP
+          host: ${{ secrets.SERVER_IP }}
           username: ${{ env.USERNAME_SERVER }}
           port: 22
           key: ${{ secrets.KEY_SSL }}
