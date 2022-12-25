@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     stages {
         stage('Build') {
             agent { docker 'maven:3.8.6-eclipse-temurin-11' } 
