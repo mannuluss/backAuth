@@ -11,7 +11,6 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
-  workflow_dispatch:
 
 env:
   USERNAME_SERVER: 'ubuntuAdmin'
@@ -19,7 +18,7 @@ env:
   JAVA_VERSION: '11' # set this to the java version to use
 
 jobs:
-  build-and-deploy:
+  build-java-app:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout GitHub Action'
@@ -42,14 +41,17 @@ jobs:
           JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
           JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
           JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
-      
+    
+  deploy-java-app:
+    runs-on: ubuntu-latest
+    steps:
       - name: 'Deploy'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ env.USERNAME_SERVER }}
-          port: 22
           key: ${{ secrets.KEY_SSL }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
             ls
 
