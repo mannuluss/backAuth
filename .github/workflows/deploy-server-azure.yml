@@ -32,7 +32,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'maven'
 
-      - name: 'Restore Project Dependencies Using Mvn'
+      - name: 'Build Maven'
         shell: pwsh
         run: |
           pushd './${{ env.PACKAGE_DIRECTORY }}'
