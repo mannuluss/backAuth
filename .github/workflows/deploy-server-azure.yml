@@ -37,7 +37,6 @@ jobs:
         run: |
           pushd './${{ env.PACKAGE_DIRECTORY }}'
           mvn clean package
-          popd
         env:
           JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
           JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
@@ -45,12 +44,11 @@ jobs:
 
       - name: Configure SSH
         run: |
-          ls
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/github-actions-key
           chmod 600 ~/.ssh/github-actions-key
           cat >>~/.ssh/config <<END
-          Host ec2
+          Host virtualMachine
             HostName $SSH_HOST
             User $SSH_USER
             IdentityFile ~/.ssh/github-actions-key
@@ -59,7 +57,10 @@ jobs:
         env:
           SSH_HOST: ${{ secrets.SERVER_IP }}
           SSH_USER: ${{ env.USERNAME_SERVER }}
-          SSH_KEY: ${{ secrets.KEY_SSL }} 
-      - name: List home directory
-        run: ssh ec2 'ls -la'
-
+          SSH_KEY: ${{ secrets.KEY_SSL }}
+      #tranfiere el archivo .jar al servidor, cierra cualquier proceso anterios y ejecuta el nuevo archivo en segundo plano
+      - name: Deploy
+        run: | 
+          scp target/*.jar virtualMachine:./repository/authBackend/javaAppAuthBackend.jar
+          ssh virtualMachine "pkill java && nohup java -jar ./repository/authBackend/*.jar > log.log 2>&1 &"
+          popd
