@@ -36,6 +36,16 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.PACKAGE_DIRECTORY }}'
+          rm ./src/main/resources/application.properties
+          cat >>./src/main/resources/application.properties <<END
+          spring.datasource.url=$JDBC_DATABASE_URL
+          spring.datasource.username=$JDBC_DATABASE_USERNAME
+          spring.datasource.password=$JDBC_DATABASE_PASSWORD
+          spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+          spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
+          logging.level.org.hibernate.SQL=debug
+          server.port=$PORT
+          END
           mvn clean package
           popd
         env:
@@ -55,22 +65,11 @@ jobs:
             IdentityFile ~/.ssh/github-actions-key
             StrictHostKeyChecking no
           END
-          cat >> ./src/main/resources/application.properties <<END
-          spring.datasource.url=$JDBC_DATABASE_URL
-          spring.datasource.username=$JDBC_DATABASE_USERNAME
-          spring.datasource.password=$JDBC_DATABASE_PASSWORD
-          spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-          spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
-          logging.level.org.hibernate.SQL=debug
-          server.port=$PORT
-          END
         env:
           SSH_HOST: ${{ secrets.SERVER_IP }}
           SSH_USER: ${{ env.USERNAME_SERVER }}
           SSH_KEY: ${{ secrets.KEY_SSL }}
-          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
-          JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
-          JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
+
       #tranfiere el archivo .jar al servidor, cierra cualquier proceso anterios y ejecuta el nuevo archivo en segundo plano
       - name: Deploy
         run: | 
