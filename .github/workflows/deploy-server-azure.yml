@@ -1,5 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+#workflow deployment for JAVA SPRING BOOT APP
 
 name: Build and deploy Java project to Azure Server
 
@@ -44,7 +43,7 @@ jobs:
           JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
           JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
 
-      - name: Configure SSH
+      - name: Configure Deployment
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/github-actions-key
@@ -56,15 +55,27 @@ jobs:
             IdentityFile ~/.ssh/github-actions-key
             StrictHostKeyChecking no
           END
+          cat >> ./src/main/resources/application.properties <<END
+          spring.datasource.url=$JDBC_DATABASE_URL
+          spring.datasource.username=$JDBC_DATABASE_USERNAME
+          spring.datasource.password=$JDBC_DATABASE_PASSWORD
+          spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+          spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
+          logging.level.org.hibernate.SQL=debug
+          server.port=$PORT
+          END
         env:
           SSH_HOST: ${{ secrets.SERVER_IP }}
           SSH_USER: ${{ env.USERNAME_SERVER }}
           SSH_KEY: ${{ secrets.KEY_SSL }}
+          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+          JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
+          JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
       #tranfiere el archivo .jar al servidor, cierra cualquier proceso anterios y ejecuta el nuevo archivo en segundo plano
       - name: Deploy
         run: | 
           scp target/*.jar virtualMachine:./repository/authBackend/javaAppAuthBackend.jar
-          ssh virtualMachine "pkill java && nohup java -jar ./repository/authBackend/*.jar > log.log 2>&1 &"
+          ssh virtualMachine "pkill java && nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > log.log 2>&1 &"
       
       - name: Notify
         run: echo 'DEPLOYMENT SUCCESSFUL'
