@@ -35,7 +35,7 @@ jobs:
       - name: Build Maven
         run: |
           cd './${{ env.PACKAGE_DIRECTORY }}'
-          ll
+          ls
           rm ./src/main/resources/application.properties
           cat >>./src/main/resources/application.properties <<END
           spring.datasource.url=$JDBC_DATABASE_URL
