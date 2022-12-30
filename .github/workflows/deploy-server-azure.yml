@@ -35,6 +35,7 @@ jobs:
       - name: Build Maven
         run: |
           cd './${{ env.PACKAGE_DIRECTORY }}'
+          ll
           rm ./src/main/resources/application.properties
           cat >>./src/main/resources/application.properties <<END
           spring.datasource.url=$JDBC_DATABASE_URL
@@ -45,6 +46,7 @@ jobs:
           logging.level.org.hibernate.SQL=debug
           server.port=$PORT
           END
+          cat ./src/main/resources/application.properties
           mvn clean package
         env:
           JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
@@ -72,7 +74,7 @@ jobs:
       - name: Deploy
         run: | 
           scp target/*.jar virtualMachine:./repository/authBackend/javaAppAuthBackend.jar
-          ssh virtualMachine "pkill java && nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > log.log 2>&1 &"
+          ssh virtualMachine "pkill java && nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > authBack.log 2>&1 &"
       
       - name: Notify
         run: echo 'DEPLOYMENT SUCCESSFUL'
