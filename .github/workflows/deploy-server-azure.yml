@@ -74,7 +74,9 @@ jobs:
       - name: Deploy
         run: | 
           scp target/*.jar virtualMachine:./repository/authBackend/javaAppAuthBackend.jar
-          ssh virtualMachine "pkill java && nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > authBack.log 2>&1 &"
-      
+          ssh virtualMachine
+          pkill java
+          nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > authBack.log 2>&1 &
+
       - name: Notify
         run: echo 'DEPLOYMENT SUCCESSFUL'
