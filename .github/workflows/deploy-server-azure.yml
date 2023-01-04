@@ -13,6 +13,7 @@ on:
   workflow_dispatch:
 
 env:
+  REPO_NAME: ${{ github.event.repository.name }}
   USERNAME_SERVER: 'ubuntuAdmin'
   PACKAGE_DIRECTORY: '.' # set this to the directory which contains pom.xml file
   JAVA_VERSION: '11' # set this to the java version to use
@@ -74,8 +75,10 @@ jobs:
       - name: Deploy
         run: | 
           scp target/*.jar virtualMachine:./repository/authBackend/javaAppAuthBackend.jar
-          ssh virtualMachine "pkill java"
-          ssh virtualMachine "nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > authBack.log 2>&1 &"
+          ssh -T virtualMachine << ENDSSH
+          pkill java
+          nohup java -jar ./repository/authBackend/javaAppAuthBackend.jar > authBack.log 2>&1 &
+          ENDSSH
 
       - name: Notify
         run: echo 'DEPLOYMENT SUCCESSFUL'
